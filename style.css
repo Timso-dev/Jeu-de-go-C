@@ -357,17 +357,18 @@ body {
     background: linear-gradient(45deg, #DEB887 0%, #F5DEB3 100%);
     border: 3px solid #8B4513;
     border-radius: 8px;
-    padding: 12px;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
 }
 
 .board-lines {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
+    z-index: 1;
 }
 
 .board-line {
@@ -377,21 +378,20 @@ body {
 
 .board-line.horizontal {
     height: 1px;
-    left: 0;
-    right: 0;
 }
 
 .board-line.vertical {
     width: 1px;
-    top: 0;
-    bottom: 0;
 }
 
 .board-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: grid;
-    gap: 0;
-    position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
 .intersection {
@@ -405,11 +405,12 @@ body {
 .intersection:hover::before {
     content: '';
     position: absolute;
-    width: 80%;
-    height: 80%;
+    width: 60%;
+    height: 60%;
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.1);
     pointer-events: none;
+    z-index: 1;
 }
 
 .intersection.has-stone:hover::before {
@@ -417,39 +418,24 @@ body {
 }
 
 .intersection .stone {
-    width: 90%;
-    height: 90%;
-    max-width: 35px;
-    max-height: 35px;
     position: relative;
-    z-index: 2;
-}
-
-.intersection .stone.last-move::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 8px;
-    height: 8px;
-    background: #ff4444;
-    border-radius: 50%;
     z-index: 3;
+    border-radius: 50%;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Points de handicap (hoshi) */
-.intersection.star-point::before {
+.intersection.star-point::after {
     content: '';
     position: absolute;
     width: 6px;
     height: 6px;
     background: #8B4513;
     border-radius: 50%;
-    z-index: 0;
+    z-index: 1;
 }
 
-.intersection.has-stone.star-point::before {
+.intersection.has-stone.star-point::after {
     display: none;
 }
 
