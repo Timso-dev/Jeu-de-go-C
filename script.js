@@ -151,8 +151,12 @@ class GoGame {
 
     createBoardGrid() {
         this.boardElement.innerHTML = '';
-        this.boardElement.style.gridTemplateColumns = `repeat(${this.boardSize}, 1fr)`;
-        this.boardElement.style.gridTemplateRows = `repeat(${this.boardSize}, 1fr)`;
+        
+        // Calculer la taille du plateau
+        const boardSize = Math.min(600, window.innerWidth - 100);
+        this.boardElement.style.width = `${boardSize}px`;
+        this.boardElement.style.height = `${boardSize}px`;
+        this.boardElement.style.position = 'relative';
         
         // Créer les lignes du plateau
         this.createBoardLines();
@@ -160,8 +164,15 @@ class GoGame {
         // Créer la grille d'intersections
         const gridContainer = document.createElement('div');
         gridContainer.className = 'board-grid';
+        gridContainer.style.position = 'absolute';
+        gridContainer.style.top = '0';
+        gridContainer.style.left = '0';
+        gridContainer.style.width = '100%';
+        gridContainer.style.height = '100%';
+        gridContainer.style.display = 'grid';
         gridContainer.style.gridTemplateColumns = `repeat(${this.boardSize}, 1fr)`;
         gridContainer.style.gridTemplateRows = `repeat(${this.boardSize}, 1fr)`;
+        gridContainer.style.gap = '0';
         
         for (let row = 0; row < this.boardSize; row++) {
             for (let col = 0; col < this.boardSize; col++) {
@@ -169,10 +180,23 @@ class GoGame {
                 intersection.className = 'intersection';
                 intersection.dataset.row = row;
                 intersection.dataset.col = col;
+                intersection.style.position = 'relative';
+                intersection.style.display = 'flex';
+                intersection.style.alignItems = 'center';
+                intersection.style.justifyContent = 'center';
+                intersection.style.cursor = 'pointer';
                 
                 // Marquer les points d'étoile (hoshi)
                 if (this.isStarPoint(row, col)) {
                     intersection.classList.add('star-point');
+                    const starDot = document.createElement('div');
+                    starDot.style.width = '6px';
+                    starDot.style.height = '6px';
+                    starDot.style.backgroundColor = '#8B4513';
+                    starDot.style.borderRadius = '50%';
+                    starDot.style.position = 'absolute';
+                    starDot.style.zIndex = '1';
+                    intersection.appendChild(starDot);
                 }
                 
                 intersection.addEventListener('click', (e) => this.handleIntersectionClick(e));
@@ -186,14 +210,26 @@ class GoGame {
     createBoardLines() {
         const linesContainer = document.createElement('div');
         linesContainer.className = 'board-lines';
+        linesContainer.style.position = 'absolute';
+        linesContainer.style.top = '0';
+        linesContainer.style.left = '0';
+        linesContainer.style.width = '100%';
+        linesContainer.style.height = '100%';
+        linesContainer.style.pointerEvents = 'none';
+        linesContainer.style.zIndex = '0';
         
-        const cellSize = `${100 / this.boardSize}%`;
+        const cellSize = 100 / this.boardSize;
         
         // Lignes horizontales
         for (let i = 0; i < this.boardSize; i++) {
             const line = document.createElement('div');
             line.className = 'board-line horizontal';
-            line.style.top = `calc(${i * 100 / this.boardSize}% + ${cellSize} / 2)`;
+            line.style.position = 'absolute';
+            line.style.height = '1px';
+            line.style.backgroundColor = '#8B4513';
+            line.style.left = `${cellSize / 2}%`;
+            line.style.right = `${cellSize / 2}%`;
+            line.style.top = `${i * cellSize + cellSize / 2}%`;
             linesContainer.appendChild(line);
         }
         
@@ -201,7 +237,12 @@ class GoGame {
         for (let i = 0; i < this.boardSize; i++) {
             const line = document.createElement('div');
             line.className = 'board-line vertical';
-            line.style.left = `calc(${i * 100 / this.boardSize}% + ${cellSize} / 2)`;
+            line.style.position = 'absolute';
+            line.style.width = '1px';
+            line.style.backgroundColor = '#8B4513';
+            line.style.top = `${cellSize / 2}%`;
+            line.style.bottom = `${cellSize / 2}%`;
+            line.style.left = `${i * cellSize + cellSize / 2}%`;
             linesContainer.appendChild(line);
         }
         
@@ -708,17 +749,24 @@ class GoGame {
     }
 
     updateBoardDisplay() {
-        const intersections = this.boardElement.querySelectorAll('.intersection');
+        const gridContainer = this.boardElement.querySelector('.board-grid');
+        if (!gridContainer) return;
+        
+        const intersections = gridContainer.querySelectorAll('.intersection');
         
         intersections.forEach((intersection, index) => {
             const row = Math.floor(index / this.boardSize);
             const col = index % this.boardSize;
             const stone = this.board[row][col];
             
-            // Nettoyer l'intersection
-            intersection.innerHTML = '';
-            intersection.className = 'intersection';
+            // Nettoyer l'intersection (garder seulement les points d'étoile)
+            const existingStone = intersection.querySelector('.stone');
+            if (existingStone) {
+                existingStone.remove();
+            }
             
+            // Réinitialiser les classes
+            intersection.className = 'intersection';
             if (this.isStarPoint(row, col)) {
                 intersection.classList.add('star-point');
             }
@@ -727,19 +775,49 @@ class GoGame {
                 intersection.classList.add('has-stone');
                 const stoneElement = document.createElement('div');
                 stoneElement.className = `stone ${stone}-stone`;
+                stoneElement.style.width = '80%';
+                stoneElement.style.height = '80%';
+                stoneElement.style.borderRadius = '50%';
+                stoneElement.style.position = 'relative';
+                stoneElement.style.zIndex = '3';
+                stoneElement.style.boxShadow = '2px 2px 4px rgba(0, 0, 0, 0.3)';
+                
+                if (stone === 'black') {
+                    stoneElement.style.background = 'radial-gradient(circle at 30% 30%, #555, #000)';
+                    stoneElement.style.border = '2px solid #333';
+                } else {
+                    stoneElement.style.background = 'radial-gradient(circle at 30% 30%, #fff, #ddd)';
+                    stoneElement.style.border = '2px solid #999';
+                }
                 
                 // Marquer la dernière pierre jouée
                 if (this.showLastMoveCheckbox.checked && this.moveHistory.length > 0) {
                     const lastMove = this.moveHistory[this.moveHistory.length - 1];
                     if (lastMove.row === row && lastMove.col === col && !lastMove.pass) {
                         stoneElement.classList.add('last-move');
+                        const marker = document.createElement('div');
+                        marker.style.position = 'absolute';
+                        marker.style.top = '50%';
+                        marker.style.left = '50%';
+                        marker.style.transform = 'translate(-50%, -50%)';
+                        marker.style.width = '8px';
+                        marker.style.height = '8px';
+                        marker.style.backgroundColor = '#ff4444';
+                        marker.style.borderRadius = '50%';
+                        marker.style.zIndex = '4';
+                        stoneElement.appendChild(marker);
                     }
                 }
                 
                 // Marquer les pierres mortes en mode comptage
                 if (this.scoringMode && this.deadStones.has(`${row},${col}`)) {
                     intersection.classList.add('dead-stone');
+                    stoneElement.style.opacity = '0.5';
+                    stoneElement.style.filter = 'grayscale(50%)';
                 }
+                
+                // Animation de placement
+                stoneElement.style.animation = 'placeStone 0.3s ease';
                 
                 intersection.appendChild(stoneElement);
             }
