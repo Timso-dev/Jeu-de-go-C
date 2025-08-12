@@ -9,7 +9,7 @@ Une implémentation complète du jeu de Go (Weiqi/Baduk) en JavaScript, respecta
 ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-**🚀 [Jouer maintenant](https://Timso-dev.github.io/jeu-de-go/)**
+**🚀 [Jouer maintenant](https://Timso-dev.github.io/Jeu-de-go/)**
 
 ## 📋 Règles du Go
 
@@ -74,7 +74,7 @@ Contrôler le plus de territoire possible en plaçant des pierres et en capturan
 ## 🏗️ Structure du projet
 
 ```
-jeu-de-go/
+Jeu-de-go/
 ├── index.html          # Interface utilisateur complète
 ├── style.css           # Design authentique et responsive
 ├── script.js           # Logique de jeu et règles
@@ -96,13 +96,13 @@ jeu-de-go/
 
 1. **Créer un dépôt**
    ```bash
-   # Sur GitHub, créez un dépôt nommé "jeu-de-go"
+   # Sur GitHub, créez un dépôt nommé "Jeu-de-go"
    ```
 
 2. **Ajouter les fichiers**
    ```bash
-   git clone https://github.com/Timso-dev/jeu-de-go.git
-   cd jeu-de-go
+   git clone https://github.com/Timso-dev/Jeu-de-go.git
+   cd Jeu-de-go
    
    # Ajoutez les 3 fichiers : index.html, style.css, script.js
    git add .
@@ -116,12 +116,12 @@ jeu-de-go/
    - Branch : `main` → `/ (root)`
 
 4. **Jouer**
-   - `https://Timso-dev.github.io/jeu-de-go/`
+   - `https://Timso-dev.github.io/Jeu-de-go/`
 
 ### **Test local**
 ```bash
-git clone https://github.com/Timso-dev/jeu-de-go.git
-cd jeu-de-go
+git clone https://github.com/Timso-dev/Jeu-de-go.git
+cd Jeu-de-go
 
 # Serveur local optionnel
 python -m http.server 8000
@@ -451,8 +451,8 @@ Ce projet est sous licence **MIT**. Utilisation libre y compris commerciale.
 ## 📞 Support et communauté
 
 - **Documentation** : Ce README complet
-- **Issues** : [Signaler un problème](https://github.com/Timso-dev/jeu-de-go/issues)
-- **Discussions** : [Forum communautaire](https://github.com/Timso-dev/jeu-de-go/discussions)
+- **Issues** : [Signaler un problème](https://github.com/Timso-dev/Jeu-de-go/issues)
+- **Discussions** : [Forum communautaire](https://github.com/Timso-dev/Jeu-de-go/discussions)
 - **Email** : support@votredomaine.com
 
 ---
