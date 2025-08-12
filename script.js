@@ -152,13 +152,12 @@ class GoGame {
     createBoardGrid() {
         this.boardElement.innerHTML = '';
         
-        // Calculer la taille du plateau
-        const boardSize = Math.min(600, window.innerWidth - 100);
-        this.boardElement.style.width = `${boardSize}px`;
-        this.boardElement.style.height = `${boardSize}px`;
+        // Définir une taille fixe pour le plateau
+        this.boardElement.style.width = '600px';
+        this.boardElement.style.height = '600px';
         this.boardElement.style.position = 'relative';
         
-        // Créer les lignes du plateau
+        // Créer les lignes du plateau d'abord
         this.createBoardLines();
         
         // Créer la grille d'intersections
@@ -173,6 +172,8 @@ class GoGame {
         gridContainer.style.gridTemplateColumns = `repeat(${this.boardSize}, 1fr)`;
         gridContainer.style.gridTemplateRows = `repeat(${this.boardSize}, 1fr)`;
         gridContainer.style.gap = '0';
+        gridContainer.style.padding = '15px';
+        gridContainer.style.boxSizing = 'border-box';
         
         for (let row = 0; row < this.boardSize; row++) {
             for (let col = 0; col < this.boardSize; col++) {
@@ -185,6 +186,8 @@ class GoGame {
                 intersection.style.alignItems = 'center';
                 intersection.style.justifyContent = 'center';
                 intersection.style.cursor = 'pointer';
+                intersection.style.minHeight = '20px';
+                intersection.style.minWidth = '20px';
                 
                 // Marquer les points d'étoile (hoshi)
                 if (this.isStarPoint(row, col)) {
@@ -205,30 +208,32 @@ class GoGame {
         }
         
         this.boardElement.appendChild(gridContainer);
+        
+        // Forcer l'affichage
+        console.log(`Plateau créé: ${this.boardSize}x${this.boardSize}, ${gridContainer.children.length} intersections`);
     }
 
     createBoardLines() {
         const linesContainer = document.createElement('div');
         linesContainer.className = 'board-lines';
         linesContainer.style.position = 'absolute';
-        linesContainer.style.top = '0';
-        linesContainer.style.left = '0';
-        linesContainer.style.width = '100%';
-        linesContainer.style.height = '100%';
+        linesContainer.style.top = '15px';
+        linesContainer.style.left = '15px';
+        linesContainer.style.right = '15px';
+        linesContainer.style.bottom = '15px';
         linesContainer.style.pointerEvents = 'none';
-        linesContainer.style.zIndex = '0';
+        linesContainer.style.zIndex = '1';
         
         const cellSize = 100 / this.boardSize;
         
         // Lignes horizontales
         for (let i = 0; i < this.boardSize; i++) {
             const line = document.createElement('div');
-            line.className = 'board-line horizontal';
             line.style.position = 'absolute';
-            line.style.height = '1px';
+            line.style.height = '2px';
             line.style.backgroundColor = '#8B4513';
-            line.style.left = `${cellSize / 2}%`;
-            line.style.right = `${cellSize / 2}%`;
+            line.style.left = '0';
+            line.style.right = '0';
             line.style.top = `${i * cellSize + cellSize / 2}%`;
             linesContainer.appendChild(line);
         }
@@ -236,12 +241,11 @@ class GoGame {
         // Lignes verticales
         for (let i = 0; i < this.boardSize; i++) {
             const line = document.createElement('div');
-            line.className = 'board-line vertical';
             line.style.position = 'absolute';
-            line.style.width = '1px';
+            line.style.width = '2px';
             line.style.backgroundColor = '#8B4513';
-            line.style.top = `${cellSize / 2}%`;
-            line.style.bottom = `${cellSize / 2}%`;
+            line.style.top = '0';
+            line.style.bottom = '0';
             line.style.left = `${i * cellSize + cellSize / 2}%`;
             linesContainer.appendChild(line);
         }
