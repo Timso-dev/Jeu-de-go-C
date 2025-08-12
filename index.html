@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu de Go</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🖤⚪ Jeu de Go (围棋)</h1>
+        <p>L'art millénaire de la stratégie et du territoire</p>
+    </div>
+
+    <div class="game-container">
+        <!-- Panneau de contrôle -->
+        <div class="control-panel">
+            <div class="game-info">
+                <h3>📊 État de la partie</h3>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="label">Tour :</span>
+                        <span id="currentPlayer">Noir</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Coups :</span>
+                        <span id="moveCount">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Prisonniers :</span>
+                        <span id="prisoners">N:0 B:0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Komi :</span>
+                        <span id="komi">6.5</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="score-panel">
+                <h3>🏆 Score</h3>
+                <div class="players-score">
+                    <div class="player-score black">
+                        <div class="player-info">
+                            <div class="stone black-stone"></div>
+                            <span class="player-name">Noir</span>
+                        </div>
+                        <div class="score-details">
+                            <div class="score-line">
+                                <span>Territoire :</span>
+                                <span id="blackTerritory">0</span>
+                            </div>
+                            <div class="score-line">
+                                <span>Prisonniers :</span>
+                                <span id="blackPrisoners">0</span>
+                            </div>
+                            <div class="score-line total">
+                                <span>Total :</span>
+                                <span id="blackTotal">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="player-score white">
+                        <div class="player-info">
+                            <div class="stone white-stone"></div>
+                            <span class="player-name">Blanc</span>
+                        </div>
+                        <div class="score-details">
+                            <div class="score-line">
+                                <span>Territoire :</span>
+                                <span id="whiteTerritory">0</span>
+                            </div>
+                            <div class="score-line">
+                                <span>Prisonniers :</span>
+                                <span id="whitePrisoners">0</span>
+                            </div>
+                            <div class="score-line">
+                                <span>Komi :</span>
+                                <span id="whiteKomi">6.5</span>
+                            </div>
+                            <div class="score-line total">
+                                <span>Total :</span>
+                                <span id="whiteTotal">6.5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <button id="passBtn" class="btn secondary">⏭️ Passer</button>
+                <button id="resignBtn" class="btn secondary">🏳️ Abandonner</button>
+                <button id="undoBtn" class="btn secondary">↩️ Annuler</button>
+                <button id="scoreBtn" class="btn primary">🧮 Compter</button>
+            </div>
+
+            <div class="game-settings">
+                <h3>⚙️ Paramètres</h3>
+                <div class="settings-group">
+                    <label for="boardSize">Taille du plateau :</label>
+                    <select id="boardSize">
+                        <option value="9">9×9 (Débutant)</option>
+                        <option value="13">13×13 (Intermédiaire)</option>
+                        <option value="19" selected>19×19 (Standard)</option>
+                    </select>
+                </div>
+                <div class="settings-group">
+                    <label for="komiValue">Komi :</label>
+                    <input type="number" id="komiValue" value="6.5" step="0.5" min="0" max="10">
+                </div>
+                <div class="settings-group">
+                    <label>
+                        <input type="checkbox" id="showCoords" checked>
+                        Afficher coordonnées
+                    </label>
+                </div>
+                <div class="settings-group">
+                    <label>
+                        <input type="checkbox" id="showLastMove" checked>
+                        Marquer dernier coup
+                    </label>
+                </div>
+            </div>
+
+            <div class="game-actions">
+                <button id="newGameBtn" class="btn primary">🎮 Nouvelle partie</button>
+                <button id="saveBtn" class="btn secondary">💾 Sauvegarder</button>
+                <button id="loadBtn" class="btn secondary">📁 Charger</button>
+                <button id="exportBtn" class="btn secondary">📤 Exporter SGF</button>
+            </div>
+
+            <div class="move-history">
+                <h3>📜 Historique</h3>
+                <div id="historyList" class="history-list">
+                    <!-- Historique des coups -->
+                </div>
+                <div class="history-controls">
+                    <button id="historyFirst" class="btn small">⏮️</button>
+                    <button id="historyPrev" class="btn small">⏪</button>
+                    <button id="historyNext" class="btn small">⏩</button>
+                    <button id="historyLast" class="btn small">⏭️</button>
+                </div>
+            </div>
+
+            <div class="rules-summary">
+                <h3>📖 Règles essentielles</h3>
+                <ul>
+                    <li><strong>Liberté :</strong> Les pierres sans liberté sont capturées</li>
+                    <li><strong>Ko :</strong> Interdit de recréer la position précédente</li>
+                    <li><strong>Suicide :</strong> Généralement interdit</li>
+                    <li><strong>Score :</strong> Territoire + Prisonniers + Komi</li>
+                    <li><strong>Fin :</strong> Deux passes consécutives</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Plateau de jeu -->
+        <div class="board-container">
+            <div class="board-wrapper">
+                <div id="coordinates-top" class="coordinates-top">
+                    <!-- Coordonnées générées par JavaScript -->
+                </div>
+                <div class="board-with-coords">
+                    <div id="coordinates-left" class="coordinates-left">
+                        <!-- Coordonnées générées par JavaScript -->
+                    </div>
+                    <div id="goBoard" class="go-board">
+                        <!-- Plateau généré par JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="board-info">
+                <div class="turn-indicator">
+                    <span>Au tour de :</span>
+                    <div id="currentPlayerStone" class="stone black-stone"></div>
+                </div>
+                <div class="last-move-info">
+                    <span id="lastMoveText">Noir commence</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de fin de partie -->
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <h2 id="gameOverTitle">🏆 Fin de partie</h2>
+            <div id="finalScore" class="final-score">
+                <!-- Score final -->
+            </div>
+            <div class="modal-actions">
+                <button id="reviewBtn" class="btn primary">👁️ Revoir</button>
+                <button id="newGameFromModalBtn" class="btn primary">🎮 Nouvelle partie</button>
+                <button id="closeModalBtn" class="btn secondary">❌ Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de comptage du territoire -->
+    <div id="scoringModal" class="modal">
+        <div class="modal-content">
+            <h2>🧮 Comptage du territoire</h2>
+            <p>Cliquez sur les pierres mortes pour les marquer</p>
+            <div id="territoryScore" class="territory-score">
+                <!-- Score du territoire -->
+            </div>
+            <div class="modal-actions">
+                <button id="finishScoringBtn" class="btn primary">✅ Terminer</button>
+                <button id="cancelScoringBtn" class="btn secondary">❌ Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages et notifications -->
+    <div class="message-container">
+        <div id="message" class="message"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
