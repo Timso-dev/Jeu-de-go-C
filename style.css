@@ -316,12 +316,14 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 600px;
 }
 
 .board-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
 .coordinates-top {
@@ -335,6 +337,8 @@ body {
     display: grid;
     grid-template-columns: 30px 1fr;
     gap: 5px;
+    width: 100%;
+    max-width: 600px;
 }
 
 .coordinates-left {
@@ -353,6 +357,8 @@ body {
 }
 
 .go-board {
+    width: 600px;
+    height: 600px;
     position: relative;
     background: linear-gradient(45deg, #DEB887 0%, #F5DEB3 100%);
     border: 3px solid #8B4513;
